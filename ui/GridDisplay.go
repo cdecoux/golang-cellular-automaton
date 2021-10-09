@@ -9,30 +9,44 @@ type GridDisplay struct {
 	ui.Block
 	CellRune rune
 	Data [][]bool
+	CellStyle ui.Style
 }
 
-func NewGridDisplay() *GridDisplay {
-	return &GridDisplay{
+func NewGridDisplay(x1, y1, x2, y2 int) *GridDisplay {
+	self := &GridDisplay{
 		Block: *ui.NewBlock(),
-		CellRune: ' ',
+		CellRune: 'Ɵ',
+		CellStyle : ui.NewStyle(
+			ui.ColorBlack,
+			ui.ColorWhite,
+			ui.StyleClear.Modifier,
+		),
 	}
+	self.SetRect(x1, y1, x2, y2)
+
+
+
+	// Initialzie the slice of data to the grid size.
+	data := make([][]bool, self.Inner.Dx())
+	for i := range data {
+		data[i] = make([]bool, self.Inner.Dy())
+	}
+
+	self.Data = data
+	return self
 }
 
 func (self *GridDisplay) renderData(buf *ui.Buffer)  {
-	//drawArea := self.Inner // Extrapolate incase this needs to be changed
-	cellStyle := ui.NewStyle(
-		ui.StyleClear.Fg,
-		ui.ColorYellow,
-		ui.StyleClear.Modifier,
-	)
-	point := image.Point{X: 1, Y: 1}
-	buf.SetCell(ui.NewCell(self.CellRune, cellStyle), point)
-
-	point = image.Point{X: 1, Y: 2}
-	buf.SetCell(ui.NewCell(self.CellRune, cellStyle), point)
-
-	point = image.Point{X: 2, Y: 1}
-	buf.SetCell(ui.NewCell(self.CellRune, cellStyle), point)
+	for i := range self.Data {
+		for j := range self.Data[i] {
+			if self.Data[i][j] {
+				buf.SetCell(
+					ui.NewCell(self.CellRune, self.CellStyle),
+					image.Point{X: i, Y: j}.Add(self.Inner.Min),
+				)
+			}
+		}
+	}
 
 }
 

@@ -17,9 +17,8 @@ func main() {
 	log.Debug("Initializing Terminal Window with Width: %s and Height: %s", width, height)
 
 
-	grid := ui.NewGridDisplay()
-	grid.Title = "Test"
-	grid.SetRect(0, 0, width, height)
+	grid := ui.NewGridDisplay(0, 0, width, height)
+	grid.Title = "Golang Cellular Automaton"
 
 	termui.Render(grid)
 
