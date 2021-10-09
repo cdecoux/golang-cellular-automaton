@@ -3,8 +3,9 @@ package main
 import (
 	termui "github.com/gizak/termui/v3"
 	log "github.com/sirupsen/logrus"
-	"golang.org/x/term"
+	"golang-cellular-automaton/automaton"
 	"golang-cellular-automaton/ui"
+	"golang.org/x/term"
 )
 
 func main() {
@@ -16,8 +17,9 @@ func main() {
 	width, height, _ := term.GetSize(0)
 	log.Debug("Initializing Terminal Window with Width: %s and Height: %s", width, height)
 
+	randAutomaton := automaton.NewRandomAutomaton(width, height)
 
-	grid := ui.NewGridDisplay(0, 0, width, height)
+	grid := ui.NewGridDisplay(randAutomaton, width, height)
 	grid.Title = "Golang Cellular Automaton"
 
 	termui.Render(grid)
@@ -27,5 +29,6 @@ func main() {
 			break
 		}
 	}
+
 }
 
