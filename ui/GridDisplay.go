@@ -11,6 +11,7 @@ type gridDisplay struct {
 	Automaton automaton.SimpleAutomaton2D
 	CellRune rune
 	CellStyle ui.Style
+	DefaultStyle ui.Style
 }
 
 func NewGridDisplay(automaton automaton.SimpleAutomaton2D, width, height int) *gridDisplay {
@@ -19,9 +20,10 @@ func NewGridDisplay(automaton automaton.SimpleAutomaton2D, width, height int) *g
 		CellRune: 0,
 		CellStyle : ui.NewStyle(
 			ui.StyleClear.Fg,
-			ui.Color(8),
+			ui.ColorWhite,
 			ui.StyleClear.Modifier,
 		),
+		DefaultStyle : ui.StyleClear,
 		Automaton: automaton,
 	}
 	self.SetRect(0, 0, width, height)
@@ -41,14 +43,20 @@ func (self *gridDisplay) renderData(buf *ui.Buffer)  {
 
 	for i := range data {
 		for j := range data[i] {
+			point := image.Point{X: i, Y: j}.Add(self.Inner.Min)
+			cellRune := ' '
+			cellStyle := self.DefaultStyle
+
 			if data[i][j] {
-				point := image.Point{X: i, Y: j}.Add(self.Inner.Min)
-				if point.In(self.Inner) {
-					buf.SetCell(
-						ui.NewCell(self.CellRune, self.CellStyle),
-						image.Point{X: i, Y: j}.Add(self.Inner.Min),
-					)
-				}
+				cellRune = self.CellRune
+				cellStyle = self.CellStyle
+			}
+
+			if point.In(self.Inner) {
+				buf.SetCell(
+					ui.NewCell(cellRune, cellStyle),
+					image.Point{X: i, Y: j}.Add(self.Inner.Min),
+				)
 			}
 		}
 	}
