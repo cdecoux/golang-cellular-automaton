@@ -67,6 +67,21 @@ func (self *gridDisplay) Update()  {
 	self.Automaton.Step()
 }
 
+func (self *gridDisplay) UpdateMouseEvent(mouse ui.Mouse) {
+	x := mouse.X
+	y := mouse.Y
+
+	point := image.Point{
+		X: x - self.Inner.Min.X,
+		Y: y - self.Inner.Min.Y,
+	}
+
+	if point.In(self.Inner) {
+		data := self.Automaton.GetData()
+		data[point.X][point.Y] = !data[point.X][point.Y]
+	}
+}
+
 func (self *gridDisplay) Draw(buf *ui.Buffer) {
 	self.Block.Draw(buf)
 

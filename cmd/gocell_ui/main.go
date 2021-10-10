@@ -24,13 +24,10 @@ func main() {
 
 	grid := ui.NewGridDisplay(gridAutomaton, width, height)
 	grid.Title = "Golang Cellular Automaton"
-	grid.CellRune = '⚈'
+	grid.CellRune = '●'
 	grid.CellStyle.Fg = termui.Color(214)
-	grid.CellStyle.Bg = termui.Color(239)
+	grid.CellStyle.Bg = termui.Color(242)
 	grid.DefaultStyle.Bg = termui.Color(239)
-
-
-
 
 	termui.Render(grid)
 
@@ -46,6 +43,9 @@ func main() {
 					return
 				case "<Space>", "<Enter>":
 					grid.Update()
+					termui.Render(grid)
+				case "<MouseLeft>":
+					grid.UpdateMouseEvent(e.Payload.(termui.Mouse))
 					termui.Render(grid)
 			}
 		case <-ticker:
