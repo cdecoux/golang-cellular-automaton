@@ -25,17 +25,21 @@ func NewRandomAutomaton(x, y int) *randomAutomaton {
 	return automaton
 }
 
-func (self *randomAutomaton) Step()  {
-	boolgen := NewBoolGenerator()
+func (self *randomAutomaton) GetData() [][]bool {
+	return self.Data
+}
 
-	for i := range self.Data {
-		for j := range self.Data[i] {
-			self.Data[i][j] = boolgen.Bool()
-		}
-	}
+func (self *randomAutomaton) SetData(data [][]bool)  {
+	self.Data = data
 }
 
 
-func (self *randomAutomaton) GetData() [][]bool {
-	return self.Data
+func (self *randomAutomaton) Step()  {
+	FillRandom(self)
+}
+
+// https://en.wikipedia.org/wiki/Conway's_Game_of_Life#Rules
+func (self *randomAutomaton) getCellUpdate(x, y int) bool {
+	return NewBoolGenerator().Bool()
+
 }
