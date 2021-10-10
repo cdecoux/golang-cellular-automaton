@@ -18,9 +18,11 @@ func main() {
 	width, height, _ := term.GetSize(0)
 	log.Debug("Initializing Terminal Window with Width: %s and Height: %s", width, height)
 
-	randAutomaton := automaton.NewRandomAutomaton(width, height)
+	gridAutomaton := automaton.NewConwayAutomaton(width, height)
+	automaton.FillRandom(gridAutomaton)
 
-	grid := ui.NewGridDisplay(randAutomaton, width, height)
+
+	grid := ui.NewGridDisplay(gridAutomaton, width, height)
 	grid.Title = "Golang Cellular Automaton"
 	grid.CellRune = '⚈'
 	grid.CellStyle.Fg = termui.Color(214)
@@ -35,16 +37,19 @@ func main() {
 	tickerCount := 1
 	tickerCount++
 	uiEvents := termui.PollEvents()
-	ticker := time.NewTicker(time.Second * 2).C
+	ticker := time.NewTicker(time.Second).C
 	for {
 		select {
 		case e := <-uiEvents:
 			switch e.ID {
-			case "q", "<C-c>":
-				return
+				case "q", "<C-c>":
+					return
+				case "<Space>", "<Enter>":
+					grid.Update()
+					termui.Render(grid)
 			}
 		case <-ticker:
-			grid.Update()
+			//grid.Update()
 			termui.Render(grid)
 			tickerCount++
 		}
