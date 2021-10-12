@@ -1,45 +1,32 @@
 package automaton
 
+import (
+	"math/rand"
+	"time"
+)
+
 /*
-	Randomizer Automaton
- */
+	https://stackoverflow.com/a/45031417/14915694
+*/
 
-type randomAutomaton struct {
-	SimpleAutomaton2D
-	Data [][]bool
+type boolgenerator struct {
+	src       rand.Source
+	cache     int64
+	remaining int
 }
 
-func NewRandomAutomaton(x, y int) *randomAutomaton {
-	// Initialzie the slice of data to the grid size.
-	data := make([][]bool, x)
-	for i := range data {
-		data[i] = make([]bool, y)
+func NewBoolGenerator() *boolgenerator {
+	return &boolgenerator{src: rand.NewSource(time.Now().UnixNano())}
+}
+
+func (b *boolgenerator) Bool() bool {
+	if b.remaining == 0 {
+		b.cache, b.remaining = b.src.Int63(), 63
 	}
 
-	automaton := &randomAutomaton{
-		Data: data,
-	}
+	result := b.cache&0x01 == 1
+	b.cache >>= 1
+	b.remaining--
 
-	FillRandom(automaton)
-
-	return automaton
-}
-
-func (self *randomAutomaton) GetData() [][]bool {
-	return self.Data
-}
-
-func (self *randomAutomaton) SetData(data [][]bool)  {
-	self.Data = data
-}
-
-
-func (self *randomAutomaton) Step()  {
-	FillRandom(self)
-}
-
-// https://en.wikipedia.org/wiki/Conway's_Game_of_Life#Rules
-func (self *randomAutomaton) getCellUpdate(x, y int) bool {
-	return NewBoolGenerator().Bool()
-
+	return result
 }

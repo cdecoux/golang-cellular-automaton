@@ -18,8 +18,8 @@ func main() {
 	width, height, _ := term.GetSize(0)
 	log.Debug("Initializing Terminal Window with Width: %s and Height: %s", width, height)
 
-	gridAutomaton := automaton.NewMapGenAutomaton(width, height)
-	automaton.FillRandom(gridAutomaton)
+	gridAutomaton := automaton.NewSimpleAutomaton2D(width, height, automaton.ConwayCellUpdateRule)
+	gridAutomaton.FillRandom()
 
 
 	grid := ui.NewGridDisplay(gridAutomaton, width, height)
