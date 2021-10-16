@@ -5,7 +5,7 @@ package automaton
  */
 
 // https://en.wikipedia.org/wiki/Conway's_Game_of_Life#Rules
-func ConwayCellUpdateRule(self simpleAutomaton2D, x, y int) bool {
+func ConwayCellUpdateRule(self *simpleAutomaton2D, x, y int) bool {
 	neighbors := self.getNeighbors(x, y)
 	neighborCount := 0
 

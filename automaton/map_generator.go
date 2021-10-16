@@ -1,6 +1,6 @@
 package automaton
 
-func MapGenCellUpdateRule(self simpleAutomaton2D, x, y int) bool {
+func MapGenCellUpdateRule(self *simpleAutomaton2D, x, y int) bool {
 	neighbors := self.getNeighbors(x, y)
 	neighborCount := 0
 

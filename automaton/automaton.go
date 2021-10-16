@@ -8,10 +8,10 @@ type SimpleAutomaton2D interface {
 type simpleAutomaton2D struct {
 	SimpleAutomaton2D
 	Data [][]bool
-	cellUpdateRule func(self simpleAutomaton2D, x, y int) bool
+	cellUpdateRule func(self *simpleAutomaton2D, x, y int) bool
 }
 
-func NewSimpleAutomaton2D(width, height int, cellUpdateRule func(self simpleAutomaton2D, x, y int) bool) *simpleAutomaton2D {
+func NewSimpleAutomaton2D(width, height int, cellUpdateRule func(self *simpleAutomaton2D, x, y int) bool) *simpleAutomaton2D {
 	// Initialzie the slice of data to the grid size.
 	data := make([][]bool, width)
 	for i := range data {
@@ -38,7 +38,7 @@ func (self *simpleAutomaton2D) Step()  {
 	Helper Functions
  */
 
-func (self simpleAutomaton2D) FillRandom()  {
+func (self *simpleAutomaton2D) FillRandom()  {
 	boolgen := NewBoolGenerator()
 
 	data := self.Data
@@ -50,7 +50,7 @@ func (self simpleAutomaton2D) FillRandom()  {
 	}
 }
 
-func (self simpleAutomaton2D)  getNeighbors(x, y int) [8]bool {
+func (self *simpleAutomaton2D)  getNeighbors(x, y int) [8]bool {
 	/*
 		Neighbors cells are directly orthogonally or diagonally adjacent
 		The following relative coordinates will be used to retrieve the neighbors
@@ -87,24 +87,23 @@ func (self simpleAutomaton2D)  getNeighbors(x, y int) [8]bool {
 }
 
 
-func (self simpleAutomaton2D) UpdateCells() {
+func (self *simpleAutomaton2D) UpdateCells() {
 
 	// Initialzie a new Data block to put our updates in
 	x := len(self.Data)
 	y := len(self.Data[0])
 
-	originalData := make([][]bool, x)
-	for i := range originalData {
-		originalData[i] = make([]bool, y)
+	stagedData := make([][]bool, x)
+	for i := range stagedData {
+		stagedData[i] = make([]bool, y)
 	}
 
 	// Go through each cell and update in the staging area
 	for i := range self.Data {
 		for j := range self.Data[i] {
-			originalData[i][j] = self.cellUpdateRule(self, i, j)
+			stagedData[i][j] = self.cellUpdateRule(self, i, j)
 		}
 	}
 
-	// TODO Is there a better way to set a slice by reference?
-	copy(self.Data, originalData)
+	self.Data = stagedData
 }
